@@ -1,4 +1,4 @@
-#!/usr/bin/swift
+//#!/usr/bin/swift
 
 //
 //  GeneratePaths.swift
@@ -168,4 +168,4 @@ func run() {
     }
 }
 
-run()
+//run()
