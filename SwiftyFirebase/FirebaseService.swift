@@ -9,6 +9,16 @@
 import FirebaseDatabase
 import Foundation
 
+public protocol PathType {
+    associatedtype PathElement
+    var rendered: String { get }
+}
+
+public protocol CollectionPathType {
+    associatedtype PathElement
+    var rendered: String { get }
+}
+
 // A small wrapper so that we prevent the user from calling collection observation with .value
 public enum CollectionEventType {
     case childAdded, childChanged, childRemoved
@@ -31,46 +41,46 @@ public class FirebaseService {
     }
 
     // MARK: Observing Paths
-    func observeSingleEvent<T>(at path: Path<T>,
+    func observeSingleEvent<T, P>(at path: P,
                                with block: @escaping (DecodeResult<T>) -> Void)
-        where T: Decodable {
+        where T: Decodable, P: PathType, P.PathElement == T {
             let ref = rootRef.child(path.rendered)
             
             ref.observeSingleEvent(of: .value, with: block)
     }
 
-    func observe<T>(at path: Path<T>,
+    func observe<T, P>(at path: P,
                     with block:  @escaping (DecodeResult<T>) -> Void) -> UInt
-        where T: Decodable {
+        where T: Decodable, P: PathType, P.PathElement == T {
             let ref = rootRef.child(path.rendered)
             return ref.observe(eventType: .value, with: block)
     }
 
     // MARK: Observing Collection Paths
-    func observeSingleEvent<T>(of type: CollectionEventType,
-                               at path: Path<T>,
+    func observeSingleEvent<T, P>(of type: CollectionEventType,
+                               at path: P,
                                with block: @escaping (DecodeResult<T>) -> Void)
-        where T: Decodable {
+        where T: Decodable, P: PathType, P.PathElement == T {
             let ref = rootRef.child(path.rendered)
 
             ref.observeSingleEvent(of: type.firebaseEventType, with: block)
     }
 
-    func observe<T>(eventType type: CollectionEventType,
-                    at path: Path<T>.Collection,
+    func observe<T, P>(eventType type: CollectionEventType,
+                    at path: P,
                     with block:  @escaping (DecodeResult<T>) -> Void) -> UInt
-        where T: Decodable {
+        where T: Decodable, P: CollectionPathType, P.PathElement == T {
             let ref = rootRef.child(path.rendered)
             return ref.observe(eventType: type.firebaseEventType, with: block)
     }
 
     // MARK: Adding and Setting
-    func setValue<T>(at path: Path<T>, value: T) throws where T: Encodable {
+    func setValue<T, P>(at path: P, value: T) throws where T: Encodable, P: PathType, P.PathElement == T {
         let ref = rootRef.child(path.rendered)
         try ref.setValue(value)
     }
 
-    func addValue<T>(at path: Path<T>.Collection, value: T) throws where T: Encodable {
+    func addValue<T, P>(at path: P, value: T) throws where T: Encodable, P: CollectionPathType, P.PathElement == T {
         let ref = rootRef.child(path.rendered)
         let childRef = ref.childByAutoId()
         try childRef.setValue(value)

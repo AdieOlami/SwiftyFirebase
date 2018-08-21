@@ -51,6 +51,17 @@ public struct Path<Element> {
     }
 }
 
+public struct Sko: PathType {
+    public typealias PathElement = String
+    public var rendered: String
+}
+
+extension Path: PathType {
+    public typealias PathElement = Element
+}
+extension Path.Collection: CollectionPathType {
+    public typealias PathElement = Element
+}
 
 // MARK: Modelling the actual Firebase RTDB hierarchy
 

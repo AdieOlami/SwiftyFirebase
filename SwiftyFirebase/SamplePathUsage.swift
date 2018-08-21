@@ -30,5 +30,4 @@ func example() throws {
 
     let message = Message(header: "Firebase", body: "Firebase is awesome!")
     try s.addValue(at: firechatPath.messages, value: message)
-
 }
