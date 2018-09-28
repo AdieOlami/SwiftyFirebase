@@ -1,0 +1,13 @@
+{
+  "configuration": "Configuration",
+  "accounts" : {
+    "key": {
+      "shops": {
+        "key": "Shop"
+      },
+      "shop_index": {
+         "key": "ShopIndex"
+      }
+    }
+  }
+}
